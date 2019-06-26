@@ -32,9 +32,6 @@ fi
 
 export CGO_ENABLED=0
 export GOARCH="${ARCH}"
-if [ $GOARCH == "amd64" ]; then
-    export GOBIN="$GOPATH/bin/linux_amd64"
-fi
 
 # ./vendor/... is specified to include installing binary from vendor folder.
 # Since Go 1.9, vendor matching will no longer work with ./...

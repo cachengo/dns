@@ -36,13 +36,13 @@ CONTAINER_BINARIES := \
 # List of images to build (contained in images/)
 IMAGES := dnsmasq
 # Registry to push to.
-REGISTRY ?= staging-k8s.gcr.io
+REGISTRY ?= docker.io
 # Default architecture to build for.
 ARCH ?= amd64
 # Image to use for building.
 BUILD_IMAGE ?= golang:1.11-alpine
 # Containers will be named: $(CONTAINER_PREFIX)-$(BINARY)-$(ARCH):$(VERSION)
-CONTAINER_PREFIX ?= k8s-dns
+CONTAINER_PREFIX ?= cachengo/k8s-dns
 
 # This version-strategy uses git tags to set the version string
 VERSION ?= $(shell git describe --tags --always --dirty)

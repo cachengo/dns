@@ -21,7 +21,7 @@ CONTAINER_PREFIX ?= k8s-dns
 ALL_ARCH := amd64 arm arm64 ppc64le s390x
 MANIFEST_IMAGE := $(REGISTRY)/$(CONTAINER_PREFIX)-dnsmasq
 IMAGE := $(CONTAINER_PREFIX)-dnsmasq-$(ARCH)
-COMPILE_IMAGE := k8s.gcr.io/kube-cross:v1.7.6-k8s1.6-0
+COMPILE_IMAGE := alpine:3.8
 OUTPUT_DIR := _output/$(ARCH)
 
 # Ensure that the docker command line supports the manifest images
@@ -147,17 +147,16 @@ else
 		&& sed -i- "s/__CROSS_BUILD_COPY__/COPY/g" Dockerfile && rm Dockerfile-
 	@cd $(OUTPUT_DIR)/docker \
 		&& curl -sSL $(MULTIARCH_RELEASE) | tar -xJ
-	@docker run --sig-proxy=true --rm      \
-		--privileged $(MULTIARCH_CONTAINER)  \
-		--reset $(VERBOSE_OUTPUT)
 	@docker pull $(COMPILE_IMAGE)
 	@docker run --rm --sig-proxy=true \
 		-v `pwd`/$(OUTPUT_DIR):/build   \
 		-v `pwd`:/src                   \
 		$(COMPILE_IMAGE)                \
-		/bin/bash -c                    \
-		"cd /build/$(DNSMASQ_VERSION)   \
-			&& CC=$(TRIPLE)-gcc make -j   \
+		/bin/sh -c                      \
+		"apk update                           \
+			&& apk add alpine-sdk xz libcap-dev \
+		  && cd /build/$(DNSMASQ_VERSION)     \
+			&& CC=$(TRIPLE)-gcc make -j         \
 			&& cp src/dnsmasq /build/docker/dnsmasq" $(VERBOSE_OUTPUT)
 endif
 
