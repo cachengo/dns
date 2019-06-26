@@ -35,7 +35,7 @@ else ifeq ($(ARCH),arm)
 	TRIPLE    ?= arm-linux-gnueabihf
 	QEMUARCH  := arm
 else ifeq ($(ARCH),arm64)
-	BASEIMAGE ?= aarch64/busybox:glibc
+	BASEIMAGE ?= alpine:3.8
 	TRIPLE    ?= aarch64-linux-gnu
 	QEMUARCH  := aarch64
 else ifeq ($(ARCH),ppc64le)
