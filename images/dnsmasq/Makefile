@@ -127,7 +127,6 @@ $(BINARY): Dockerfile.cross $(DNSMASQ_ARCHIVE) $(PATCHES) dnsmasq.conf
 	@for patch in $(PATCHES); do patch -p0 -d $(OUTPUT_DIR)/$(DNSMASQ_VERSION) < $${patch}; done
 	@cp dnsmasq.conf $(OUTPUT_DIR)/docker
 
-ifeq ($(ARCH),amd64)
 	@cd $(OUTPUT_DIR)/docker && \
 		sed -i- "/__CROSS_BUILD_COPY__/d" Dockerfile && rm Dockerfile-
 	@docker pull $(COMPILE_IMAGE)
@@ -141,24 +140,6 @@ ifeq ($(ARCH),amd64)
 			&& cd /build/$(DNSMASQ_VERSION)     \
 			&& make -j                          \
 			&& cp src/dnsmasq /build/docker/dnsmasq" $(VERBOSE_OUTPUT)
-else
-	@cd $(OUTPUT_DIR)/docker                                                 \
-		&& sed -i- "s|__ARCH__|$(QEMUARCH)|g" Dockerfile && rm Dockerfile-     \
-		&& sed -i- "s/__CROSS_BUILD_COPY__/COPY/g" Dockerfile && rm Dockerfile-
-	@cd $(OUTPUT_DIR)/docker \
-		&& curl -sSL $(MULTIARCH_RELEASE) | tar -xJ
-	@docker pull $(COMPILE_IMAGE)
-	@docker run --rm --sig-proxy=true \
-		-v `pwd`/$(OUTPUT_DIR):/build   \
-		-v `pwd`:/src                   \
-		$(COMPILE_IMAGE)                \
-		/bin/sh -c                      \
-		"apk update                           \
-			&& apk add alpine-sdk xz libcap-dev \
-		  && cd /build/$(DNSMASQ_VERSION)     \
-			&& CC=$(TRIPLE)-gcc make -j         \
-			&& cp src/dnsmasq /build/docker/dnsmasq" $(VERBOSE_OUTPUT)
-endif
 
 $(DNSMASQ_ARCHIVE):
 	@mkdir -p $(@D)
