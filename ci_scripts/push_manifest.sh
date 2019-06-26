@@ -17,3 +17,7 @@ docker manifest push cachengo/${IMAGE_NAME}:${IMAGE_TAG}
 IMAGE_NAME=k8s-dns-dnsmasq-nanny
 docker manifest create --amend cachengo/${IMAGE_NAME}:${IMAGE_TAG} cachengo/${IMAGE_NAME}-amd64:${IMAGE_TAG} cachengo/${IMAGE_NAME}-arm64:${IMAGE_TAG}
 docker manifest push cachengo/${IMAGE_NAME}:${IMAGE_TAG}
+
+IMAGE_NAME=k8s-dns-node-cache
+docker manifest create --amend cachengo/${IMAGE_NAME}:${IMAGE_TAG} cachengo/${IMAGE_NAME}-amd64:${IMAGE_TAG} cachengo/${IMAGE_NAME}-arm64:${IMAGE_TAG}
+docker manifest push cachengo/${IMAGE_NAME}:${IMAGE_TAG}
